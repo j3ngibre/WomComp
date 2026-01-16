@@ -1,0 +1,52 @@
+tests:
+  - id: AC-SSH-001
+    title: "Disable root SSH login"
+    frameworks:
+      CIS: "5.2.8"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "PermitRootLogin no"
+
+  - id: AC-PASSWORD-001
+    title: "Ensure password authentication is disabled"
+    frameworks:
+      CIS: "5.2.10"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "PasswordAuthentication no"
+
+  - id: AC-FIREWALL-001
+    title: "Check UFW firewall status"
+    frameworks:
+      CIS: "9.1.1"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "ufw status"
+      expected: "active"
+
+  - id: AC-LOGGING-001
+    title: "Ensure system logging is enabled"
+    frameworks:
+      CIS: "1.3.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "*.info;mail.none;authpriv.none;cron.none /var/log/messages"
