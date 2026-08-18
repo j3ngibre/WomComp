@@ -52,23 +52,12 @@ WomComp/
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/WomComp.git
+git clone https://github.com/J3ngibre/WomComp.git
 cd WomComp
 ```
 
 Install dependencies:
 
-```bash
-python3 -m pip install -r requirements.txt
-```
-
-If a `requirements.txt` file is not included yet:
-
-```text
-PyYAML
-```
-
-Then install it with:
 
 ```bash
 python3 -m pip install pyyaml
