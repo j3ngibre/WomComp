@@ -386,25 +386,6 @@ Evidence:
 
 ---
 
-# Compliance Score
-
-WomComp calculates the compliance score using:
-
-```text
-Passed Tests / Total Tests × 100
-```
-
-For example:
-
-```text
-42 / 50 × 100 = 84%
-```
-
-The score is intended to provide a quick overview of the system's compliance posture.
-
-It should **not** be interpreted as a formal certification or compliance attestation.
-
----
 
 # Security Considerations
 
@@ -500,7 +481,7 @@ Planned improvements include:
 * [ ] CI/CD integration.
 * [ ] Exit codes for automated pipelines.
 * [ ] Configuration validation before scanning.
-* [ ] Multiple Linux distribution support.
+
 
 ---
 
@@ -536,36 +517,12 @@ Understand how Linux security controls can be translated into automated checks.
 
 # Limitations
 
-WomComp is a technical configuration scanner.
-
-It does not currently provide:
-
-* Formal compliance certification.
-* Complete vulnerability scanning.
-* CVE vulnerability management.
-* Network penetration testing.
-* Exploitation capabilities.
-* Full SIEM functionality.
-* Continuous monitoring.
-
-A passing test only means that the configured technical condition was satisfied at the time of the scan.
-
+A lot 
 ---
 
 # Contributing
 
-Contributions are welcome.
-
-If you want to add a new check:
-
-1. Create or update a YAML test.
-2. Test it on the target Linux distribution.
-3. Verify the expected evidence.
-4. Document the control.
-5. Submit a pull request.
-
-For larger changes, open an issue first to discuss the proposed implementation.
-
+DM , no one is going to do nothing 
 ---
 
 # Disclaimer
