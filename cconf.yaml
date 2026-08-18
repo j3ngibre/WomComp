@@ -1,0 +1,3380 @@
+tests:
+  - id: AC-SSH-001
+    title: "Disable root SSH login"
+    frameworks:
+      CIS: "5.2.8"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "PermitRootLogin no"
+
+  - id: AC-PASSWORD-001
+    title: "Ensure password authentication is disabled"
+    frameworks:
+      CIS: "5.2.10"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "PasswordAuthentication no"
+
+  - id: AC-FIREWALL-001
+    title: "Check UFW firewall status"
+    frameworks:
+      CIS: "9.1.1"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "ufw status"
+      expected: "active"
+
+  - id: AC-LOGGING-001
+    title: "Ensure system logging is enabled"
+    frameworks:
+      CIS: "1.3.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "*.info"
+
+  - id: AC-SUDO-001
+    title: "Ensure sudo is installed"
+    frameworks:
+      CIS: "5.1.1"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "which sudo"
+      expected: "/usr/bin/sudo"
+
+  - id: AC-AUDITD-001
+    title: "Ensure auditd is installed"
+    frameworks:
+      CIS: "4.1.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl status auditd"
+      expected: "active (running)"
+
+  - id: AC-PASSWD-001
+    title: "Check password expiration policy"
+    frameworks:
+      CIS: "5.4.1"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/login.defs"
+      expected: "PASS_MAX_DAYS 90"
+
+  - id: AC-FILEPERM-001
+    title: "Check /etc/passwd permissions"
+    frameworks:
+      CIS: "6.1.2"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "permission"
+      file: "/etc/passwd"
+      expected: "644"
+
+  - id: AC-FILEPERM-002
+    title: "Check /etc/shadow permissions"
+    frameworks:
+      CIS: "6.1.3"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "permission"
+      file: "/etc/shadow"
+      expected: "640"
+
+  - id: AC-NETWORK-001
+    title: "Check SSH port configuration"
+    frameworks:
+      CIS: "5.2.1"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-17"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "Port 22"
+
+  - id: AC-FAIL2BAN-001
+    title: "Ensure fail2ban is running"
+    frameworks:
+      CIS: "9.1.1"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl status fail2ban"
+      expected: "active (running)"
+
+  - id: AC-KERNEL-001
+    title: "Check kernel hardening parameters"
+    frameworks:
+      CIS: "1.5.1"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Kernel"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_syncookies = 1"
+
+  - id: AC-MOUNT-001
+    title: "Check /tmp mount options"
+    frameworks:
+      CIS: "1.1.3"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Filesystem"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/fstab"
+      expected: "/tmp nosuid"
+
+  - id: AC-MOUNT-002
+    title: "Check /var/tmp mount options"
+    frameworks:
+      CIS: "1.1.4"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Filesystem"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/fstab"
+      expected: "/var/tmp nosuid"
+
+  - id: AC-USERS-001
+    title: "Check for empty passwords"
+    frameworks:
+      CIS: "6.2.3"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "critical"
+    check:
+      type: "command"
+      command: 'sudo awk -F: ''($2 == "") {print}'' /etc/shadow'
+      expected: ""
+
+  - id: AC-ROOT-001
+    title: "Ensure root login is allowed only via console"
+    frameworks:
+      CIS: "5.2.8"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/securetty"
+      expected: "tty1"
+
+  - id: AC-NTP-001
+    title: "Ensure NTP is running"
+    frameworks:
+      CIS: "2.2.1"
+      ISO27001: "A.12.4.4"
+      NIST: "AU-8"
+    category: "System Time"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl status ntp"
+      expected: "active (running)"
+
+  - id: AC-CHRONY-001
+    title: "Ensure chrony is running"
+    frameworks:
+      CIS: "2.2.1"
+      ISO27001: "A.12.4.4"
+      NIST: "AU-8"
+    category: "System Time"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl status chrony"
+      expected: "active (running)"
+
+  - id: AC-SSH-002
+    title: "Disable SSH X11 forwarding"
+    frameworks:
+      CIS: "5.2.6"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-17"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "X11Forwarding no"
+
+  - id: AC-SSH-003
+    title: "Set SSH Idle Timeout interval"
+    frameworks:
+      CIS: "5.2.13"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-12"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "ClientAliveInterval 300"
+
+  - id: AC-SSH-004
+    title: "Set SSH Idle Timeout count"
+    frameworks:
+      CIS: "5.2.13"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-12"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "ClientAliveCountMax 0"
+
+  - id: AC-SSH-005
+    title: "Disable SSH Host-based authentication"
+    frameworks:
+      CIS: "5.2.9"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "HostbasedAuthentication no"
+
+  - id: AC-SSH-006
+    title: "Disable SSH .rhosts files"
+    frameworks:
+      CIS: "5.2.12"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "IgnoreRhosts yes"
+
+  - id: AC-SSH-007
+    title: "Disable SSH root login via SSH"
+    frameworks:
+      CIS: "5.2.8"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "PermitRootLogin no"
+
+  - id: AC-SSH-008
+    title: "Set SSH MaxAuthTries to 4 or less"
+    frameworks:
+      CIS: "5.2.4"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-7"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "MaxAuthTries 4"
+
+  - id: AC-SSH-009
+    title: "Set SSH MaxSessions to 10 or less"
+    frameworks:
+      CIS: "5.2.5"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-10"
+    category: "Authentication"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "MaxSessions 10"
+
+  - id: AC-PAM-001
+    title: "Check password strength requirements"
+    frameworks:
+      CIS: "5.3.1"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-password"
+      expected: "pam_cracklib.so"
+
+  - id: AC-PAM-002
+    title: "Check password history policy"
+    frameworks:
+      CIS: "5.3.3"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-password"
+      expected: "remember=5"
+
+  - id: AC-PAM-003
+    title: "Check account lockout policy"
+    frameworks:
+      CIS: "5.3.2"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-7"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-auth"
+      expected: "pam_tally2.so"
+
+  - id: AC-KERNEL-002
+    title: "Check IP forwarding is disabled"
+    frameworks:
+      CIS: "3.1.1"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.ip_forward = 0"
+
+  - id: AC-KERNEL-003
+    title: "Check packet forwarding for IPv6 is disabled"
+    frameworks:
+      CIS: "3.1.2"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv6.conf.all.forwarding = 0"
+
+  - id: AC-KERNEL-004
+    title: "Check source packet routing is disabled"
+    frameworks:
+      CIS: "3.2.1"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.conf.all.send_redirects = 0"
+
+  - id: AC-KERNEL-005
+    title: "Check ICMP redirects are disabled"
+    frameworks:
+      CIS: "3.2.2"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.conf.all.accept_redirects = 0"
+
+  - id: AC-KERNEL-006
+    title: "Check secure ICMP redirects are disabled"
+    frameworks:
+      CIS: "3.2.3"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.conf.all.secure_redirects = 0"
+
+  - id: AC-KERNEL-007
+    title: "Check logs of suspicious packets"
+    frameworks:
+      CIS: "3.3.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.conf.all.log_martians = 1"
+
+  - id: AC-KERNEL-008
+    title: "Check ignore ICMP broadcasts"
+    frameworks:
+      CIS: "3.3.2"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.icmp_echo_ignore_broadcasts = 1"
+
+  - id: AC-KERNEL-009
+    title: "Check ignore ICMP bogus errors"
+    frameworks:
+      CIS: "3.3.3"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.icmp_ignore_bogus_error_responses = 1"
+
+  - id: AC-KERNEL-010
+    title: "Check TCP SYN cookies are enabled"
+    frameworks:
+      CIS: "3.3.4"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_syncookies = 1"
+
+  - id: AC-KERNEL-011
+    title: "Check IPv6 router advertisements"
+    frameworks:
+      CIS: "3.3.5"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv6.conf.all.accept_ra = 0"
+
+  - id: AC-FIREWALL-002
+    title: "Ensure default deny firewall policy"
+    frameworks:
+      CIS: "9.1.2"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "ufw default"
+      expected: "deny"
+
+  - id: AC-FIREWALL-003
+    title: "Ensure SSH port is allowed on firewall"
+    frameworks:
+      CIS: "9.1.3"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "ufw status | grep 22"
+      expected: "22/tcp"
+
+  - id: AC-FIREWALL-004
+    title: "Ensure HTTP port is allowed on firewall"
+    frameworks:
+      CIS: "9.1.3"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ufw status | grep 80"
+      expected: "80/tcp"
+
+  - id: AC-FIREWALL-005
+    title: "Ensure HTTPS port is allowed on firewall"
+    frameworks:
+      CIS: "9.1.3"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ufw status | grep 443"
+      expected: "443/tcp"
+
+  - id: AC-FILEPERM-003
+    title: "Check /etc/group permissions"
+    frameworks:
+      CIS: "6.1.4"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "permission"
+      file: "/etc/group"
+      expected: "644"
+
+  - id: AC-FILEPERM-004
+    title: "Check /etc/gshadow permissions"
+    frameworks:
+      CIS: "6.1.5"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "permission"
+      file: "/etc/gshadow"
+      expected: "640"
+
+  - id: AC-FILEPERM-005
+    title: "Check /etc/passwd ownership"
+    frameworks:
+      CIS: "6.1.6"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "command"
+      command: "stat -c '%U:%G' /etc/passwd"
+      expected: "root:root"
+
+  - id: AC-FILEPERM-006
+    title: "Check /etc/shadow ownership"
+    frameworks:
+      CIS: "6.1.7"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "command"
+      command: "stat -c '%U:%G' /etc/shadow"
+      expected: "root:shadow"
+
+  - id: AC-FILEPERM-007
+    title: "Check /etc/group ownership"
+    frameworks:
+      CIS: "6.1.8"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "command"
+      command: "stat -c '%U:%G' /etc/group"
+      expected: "root:root"
+
+  - id: AC-FILEPERM-008
+    title: "Check /etc/gshadow ownership"
+    frameworks:
+      CIS: "6.1.9"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "command"
+      command: "stat -c '%U:%G' /etc/gshadow"
+      expected: "root:shadow"
+
+  - id: AC-FILEPERM-009
+    title: "Check /etc/passwd no UID 0 non-root accounts"
+    frameworks:
+      CIS: "6.2.1"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "critical"
+    check:
+      type: "command"
+      command: "awk -F: '($3 == 0) {print}' /etc/passwd"
+      expected: "root:x:0:0:root:/root:/bin/bash"
+
+  - id: AC-FILEPERM-010
+    title: "Check no duplicate UIDs"
+    frameworks:
+      CIS: "6.2.2"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "sort -t: -k3 -n /etc/passwd | uniq -c -f2 | wc -l"
+      expected: "0"
+
+  - id: AC-FILEPERM-011
+    title: "Check no duplicate GIDs"
+    frameworks:
+      CIS: "6.2.3"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "sort -t: -k3 -n /etc/group | uniq -c -f2 | wc -l"
+      expected: "0"
+
+  - id: AC-FILEPERM-012
+    title: "Check no duplicate usernames"
+    frameworks:
+      CIS: "6.2.4"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "sort -t: -k1 /etc/passwd | uniq -c -f1 | wc -l"
+      expected: "0"
+
+  - id: AC-FILEPERM-013
+    title: "Check no duplicate group names"
+    frameworks:
+      CIS: "6.2.5"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "sort -t: -k1 /etc/group | uniq -c -f1 | wc -l"
+      expected: "0"
+
+  - id: AC-AUDIT-002
+    title: "Check auditd logging of system calls"
+    frameworks:
+      CIS: "4.1.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-a always,exit -S"
+
+  - id: AC-AUDIT-003
+    title: "Check auditd logging of file accesses"
+    frameworks:
+      CIS: "4.1.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /etc/passwd -p wa -k identity"
+
+  - id: AC-AUDIT-004
+    title: "Check auditd logging of sudoers"
+    frameworks:
+      CIS: "4.1.4"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /etc/sudoers -p wa -k priv_esc"
+
+  - id: AC-AUDIT-005
+    title: "Check auditd logging of shadow file"
+    frameworks:
+      CIS: "4.1.5"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /etc/shadow -p wa -k identity"
+
+  - id: AC-AUDIT-006
+    title: "Check auditd logging of kernel modules"
+    frameworks:
+      CIS: "4.1.6"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /sbin/insmod -p x -k modules"
+
+  - id: AC-AUDIT-007
+    title: "Check auditd logging of firewall changes"
+    frameworks:
+      CIS: "4.1.7"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /etc/ufw/ -p wa -k firewall"
+
+  - id: AC-LOGGING-002
+    title: "Check logging of authentication events"
+    frameworks:
+      CIS: "1.3.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "auth,authpriv.*"
+
+  - id: AC-LOGGING-003
+    title: "Check logging of cron events"
+    frameworks:
+      CIS: "1.3.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "cron.*"
+
+  - id: AC-LOGGING-004
+    title: "Check logging of kernel events"
+    frameworks:
+      CIS: "1.3.4"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "kern.*"
+
+  - id: AC-LOGGING-005
+    title: "Check logging of mail events"
+    frameworks:
+      CIS: "1.3.5"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "mail.*"
+
+  - id: AC-ACCESS-001
+    title: "Check sudoer password timeout"
+    frameworks:
+      CIS: "5.1.2"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sudoers"
+      expected: "timestamp_timeout"
+
+  - id: AC-ACCESS-002
+    title: "Check sudoer log file"
+    frameworks:
+      CIS: "5.1.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sudoers"
+      expected: "logfile"
+
+  - id: AC-ACCESS-003
+    title: "Check sudoer requiretty"
+    frameworks:
+      CIS: "5.1.4"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sudoers"
+      expected: "requiretty"
+
+  - id: AC-ACCESS-004
+    title: "Check sudoer secure_path"
+    frameworks:
+      CIS: "5.1.5"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sudoers"
+      expected: "secure_path"
+
+  - id: AC-MOUNT-003
+    title: "Check /home mount options"
+    frameworks:
+      CIS: "1.1.5"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Filesystem"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/fstab"
+      expected: "/home nodev"
+
+  - id: AC-MOUNT-004
+    title: "Check /dev/shm mount options"
+    frameworks:
+      CIS: "1.1.6"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Filesystem"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/fstab"
+      expected: "/dev/shm noexec"
+
+  - id: AC-MOUNT-005
+    title: "Check /var/log mount options"
+    frameworks:
+      CIS: "1.1.7"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Filesystem"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/fstab"
+      expected: "/var/log nodev"
+
+  - id: AC-MOUNT-006
+    title: "Check /var/tmp mount options"
+    frameworks:
+      CIS: "1.1.8"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Filesystem"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/fstab"
+      expected: "/var/tmp noexec"
+
+  - id: AC-NETWORK-002
+    title: "Check SSH protocol version"
+    frameworks:
+      CIS: "5.2.2"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-17"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "Protocol 2"
+
+  - id: AC-NETWORK-003
+    title: "Check SSH LogLevel"
+    frameworks:
+      CIS: "5.2.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "LogLevel INFO"
+
+  - id: AC-PACKAGE-001
+    title: "Check critical security packages installed"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "high"
+    check:
+      type: "command"
+      command: "dpkg -l | grep -E '(auditd|fail2ban|ufw|rsyslog|sudo)'"
+      expected: "auditd"
+
+  - id: AC-PACKAGE-002
+    title: "Check system is up to date"
+    frameworks:
+      CIS: "1.2.1"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "high"
+    check:
+      type: "command"
+      command: "apt list --upgradable 2>/dev/null | wc -l"
+      expected: "0"
+
+  - id: AC-PACKAGE-003
+    title: "Check unattended upgrades enabled"
+    frameworks:
+      CIS: "1.2.2"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl status unattended-upgrades"
+      expected: "active (running)"
+
+  - id: AC-PROCESS-001
+    title: "Check critical processes running"
+    frameworks:
+      CIS: "1.3.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Processes"
+    severity: "high"
+    check:
+      type: "command"
+      command: "ps aux | grep -E '(auditd|rsyslog|sshd|fail2ban)'"
+      expected: "auditd"
+
+  - id: AC-PROCESS-002
+    title: "Check for suspicious processes"
+    frameworks:
+      CIS: "1.3.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Processes"
+    severity: "high"
+    check:
+      type: "command"
+      command: "ps aux | awk '{print $1}' | grep -v root | sort | uniq -c"
+      expected: "0"
+
+  - id: AC-SYSCTL-001
+    title: "Check core dumps are disabled"
+    frameworks:
+      CIS: "1.5.2"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Kernel"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/security/limits.conf"
+      expected: "* hard core 0"
+
+  - id: AC-SYSCTL-002
+    title: "Check address space layout randomization"
+    frameworks:
+      CIS: "1.5.3"
+      ISO27001: "A.9.4.2"
+      NIST: "SC-5"
+    category: "Kernel"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "kernel.randomize_va_space = 2"
+
+  - id: AC-SYSCTL-003
+    title: "Check magic sysrq is disabled"
+    frameworks:
+      CIS: "1.5.4"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Kernel"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "kernel.sysrq = 0"
+
+  - id: AC-SERVICE-001
+    title: "Check unused services are disabled"
+    frameworks:
+      CIS: "2.1.1"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl is-enabled apache2"
+      expected: "disabled"
+
+  - id: AC-SERVICE-002
+    title: "Check telnet service is disabled"
+    frameworks:
+      CIS: "2.1.2"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl is-enabled telnet"
+      expected: "disabled"
+
+  - id: AC-SERVICE-003
+    title: "Check FTP service is disabled"
+    frameworks:
+      CIS: "2.1.3"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl is-enabled vsftpd"
+      expected: "disabled"
+
+  - id: AC-SERVICE-004
+    title: "Check DNS service is disabled"
+    frameworks:
+      CIS: "2.1.4"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl is-enabled bind9"
+      expected: "disabled"
+
+  - id: AC-SERVICE-005
+    title: "Check CUPS service is disabled"
+    frameworks:
+      CIS: "2.1.5"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl is-enabled cups"
+      expected: "disabled"
+
+  - id: AC-SERVICE-006
+    title: "Check DHCP service is disabled"
+    frameworks:
+      CIS: "2.1.6"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl is-enabled isc-dhcp-server"
+      expected: "disabled"
+
+  - id: AC-SERVICE-007
+    title: "Check LDAP service is disabled"
+    frameworks:
+      CIS: "2.1.7"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl is-enabled slapd"
+      expected: "disabled"
+
+  - id: AC-SERVICE-008
+    title: "Check NIS service is disabled"
+    frameworks:
+      CIS: "2.1.8"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl is-enabled nis"
+      expected: "disabled"
+
+  - id: AC-SERVICE-009
+    title: "Check rpcbind service is disabled"
+    frameworks:
+      CIS: "2.1.9"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl is-enabled rpcbind"
+      expected: "disabled"
+
+  - id: AC-SERVICE-010
+    title: "Check avahi-daemon service is disabled"
+    frameworks:
+      CIS: "2.1.10"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl is-enabled avahi-daemon"
+      expected: "disabled"
+
+  - id: AC-ENV-001
+    title: "Check PATH environment variable"
+    frameworks:
+      CIS: "6.1.1"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Environment"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "echo $PATH | grep -E '^/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'"
+      expected: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+  - id: AC-ENV-002
+    title: "Check umask setting"
+    frameworks:
+      CIS: "6.1.2"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Environment"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "umask"
+      expected: "0022"
+
+  - id: AC-CERT-001
+    title: "Check SSH host key permissions"
+    frameworks:
+      CIS: "5.2.11"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "permission"
+      file: "/etc/ssh/ssh_host_rsa_key"
+      expected: "600"
+
+  - id: AC-CERT-002
+    title: "Check SSL certificate validity"
+    frameworks:
+      CIS: "1.2.1"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "openssl x509 -checkend 2592000 -noout -in /etc/ssl/certs/ssl-cert-snakeoil.pem"
+      expected: "Certificate will expire"
+
+  - id: AC-USER-001
+    title: "Check expired password warning"
+    frameworks:
+      CIS: "5.4.2"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/login.defs"
+      expected: "PASS_WARN_AGE 7"
+
+  - id: AC-USER-002
+    title: "Check password minimum length"
+    frameworks:
+      CIS: "5.4.3"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/login.defs"
+      expected: "PASS_MIN_LEN 12"
+
+  - id: AC-USER-003
+    title: "Check password minimum age"
+    frameworks:
+      CIS: "5.4.4"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/login.defs"
+      expected: "PASS_MIN_DAYS 1"
+
+  - id: AC-USER-004
+    title: "Check inactive password lock"
+    frameworks:
+      CIS: "5.4.5"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "useradd -D | grep INACTIVE"
+      expected: "INACTIVE=35"
+
+  - id: AC-USER-005
+    title: "Check system accounts no password"
+    frameworks:
+      CIS: "6.2.6"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "awk -F: '($3 < 1000) {print $1}' /etc/passwd | grep -v root"
+      expected: ""
+
+  - id: AC-SECURITY-001
+    title: "Check SELinux status"
+    frameworks:
+      CIS: "1.6.1"
+      ISO27001: "A.12.6.1"
+      NIST: "AC-6"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "getenforce"
+      expected: "Enforcing"
+
+  - id: AC-SECURITY-002
+    title: "Check AppArmor status"
+    frameworks:
+      CIS: "1.6.2"
+      ISO27001: "A.12.6.1"
+      NIST: "AC-6"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "apparmor_status | grep 'profiles are enforce'"
+      expected: "profiles are enforce"
+
+  - id: AC-SECURITY-003
+    title: "Check CPU microcode updates"
+    frameworks:
+      CIS: "1.4.1"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Security"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "grep -i microcode /var/log/syslog | tail -n 1"
+      expected: "microcode"
+
+  - id: AC-BACKUP-001
+    title: "Check backup service is running"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-9"
+    category: "Backup"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl status backup"
+      expected: "active"
+
+  - id: AC-BACKUP-002
+    title: "Check backup directory exists"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-9"
+    category: "Backup"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -d /backup && echo 'exists'"
+      expected: "exists"
+
+  - id: AC-MONITORING-001
+    title: "Check monitoring service is running"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Monitoring"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl status monitoring-agent"
+      expected: "active"
+
+  - id: AC-MONITORING-002
+    title: "Check logs are being collected"
+    frameworks:
+      CIS: "1.3.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Monitoring"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "test -f /var/log/syslog && echo 'exists'"
+      expected: "exists"
+
+  - id: AC-MAIL-001
+    title: "Check mail service is running"
+    frameworks:
+      CIS: "2.1.11"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "systemctl status postfix"
+      expected: "active"
+
+  - id: AC-MAIL-002
+    title: "Check mail queue monitoring"
+    frameworks:
+      CIS: "2.1.12"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "low"
+    check:
+      type: "command"
+      command: "mailq | wc -l"
+      expected: "0"
+
+  - id: AC-DATABASE-001
+    title: "Check database service is running"
+    frameworks:
+      CIS: "2.1.13"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl status mysql"
+      expected: "active"
+
+  - id: AC-DATABASE-002
+    title: "Check database backup status"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-9"
+    category: "Backup"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /backup/database_backup.sql && echo 'exists'"
+      expected: "exists"
+
+  - id: AC-WEBSERVER-001
+    title: "Check web server is running"
+    frameworks:
+      CIS: "2.1.14"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Services"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl status nginx"
+      expected: "active"
+
+  - id: AC-WEBSERVER-002
+    title: "Check web server SSL configuration"
+    frameworks:
+      CIS: "1.2.1"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/nginx/nginx.conf"
+      expected: "ssl_certificate"
+
+  - id: AC-WEBSERVER-003
+    title: "Check web server log rotation"
+    frameworks:
+      CIS: "1.3.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "test -f /etc/logrotate.d/nginx && echo 'exists'"
+      expected: "exists"
+
+  - id: AC-DOCKER-001
+    title: "Check Docker is running"
+    frameworks:
+      CIS: "2.1.15"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "systemctl status docker"
+      expected: "active"
+
+  - id: AC-DOCKER-002
+    title: "Check Docker containers status"
+    frameworks:
+      CIS: "2.1.16"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "docker ps | wc -l"
+      expected: "1"
+
+  - id: AC-NETWORK-004
+    title: "Check open ports"
+    frameworks:
+      CIS: "3.1.1"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "netstat -tulpn | grep LISTEN | wc -l"
+      expected: "5"
+
+  - id: AC-NETWORK-005
+    title: "Check DNS resolution"
+    frameworks:
+      CIS: "3.1.2"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "dig google.com | grep -q 'NOERROR' && echo 'success'"
+      expected: "success"
+
+  - id: AC-PERFORMANCE-001
+    title: "Check CPU load average"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "uptime | awk '{print $10}' | sed 's/,//g'"
+      expected: "1.00"
+
+  - id: AC-PERFORMANCE-002
+    title: "Check memory usage"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "free | grep Mem | awk '{print $3/$2 * 100}' | awk '{print int($1)}'"
+      expected: "50"
+
+  - id: AC-PERFORMANCE-003
+    title: "Check disk usage"
+    frameworks:
+      CIS: "1.1.3"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "df -h / | awk 'NR==2 {print $5}' | sed 's/%//'"
+      expected: "80"
+
+  - id: AC-PERFORMANCE-004
+    title: "Check inode usage"
+    frameworks:
+      CIS: "1.1.4"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "df -i / | awk 'NR==2 {print $5}' | sed 's/%//'"
+      expected: "80"
+
+  - id: AC-PERFORMANCE-005
+    title: "Check swap usage"
+    frameworks:
+      CIS: "1.1.5"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "free | grep Swap | awk '{print $3/$2 * 100}' | awk '{print int($1)}'"
+      expected: "10"
+
+  - id: AC-PERFORMANCE-006
+    title: "Check number of processes"
+    frameworks:
+      CIS: "1.1.6"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "low"
+    check:
+      type: "command"
+      command: "ps aux | wc -l"
+      expected: "100"
+
+  - id: AC-PERFORMANCE-007
+    title: "Check open files limit"
+    frameworks:
+      CIS: "1.1.7"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/security/limits.conf"
+      expected: "* soft nofile 65536"
+
+  - id: AC-PERFORMANCE-008
+    title: "Check disk I/O wait"
+    frameworks:
+      CIS: "1.1.8"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "iostat -c 1 2 | tail -n 1 | awk '{print $4}'"
+      expected: "5.00"
+
+  - id: AC-PERFORMANCE-009
+    title: "Check network latency"
+    frameworks:
+      CIS: "1.1.9"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "low"
+    check:
+      type: "command"
+      command: "ping -c 4 google.com | tail -n 1 | awk '{print $4}' | sed 's/ms//'"
+      expected: "50"
+
+  - id: AC-PERFORMANCE-010
+    title: "Check system uptime"
+    frameworks:
+      CIS: "1.1.10"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Performance"
+    severity: "low"
+    check:
+      type: "command"
+      command: "uptime | awk '{print $3}'"
+      expected: "1"
+
+  - id: AC-HARDWARE-001
+    title: "Check CPU temperature"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Hardware"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "sensors | grep 'Core 0' | awk '{print $3}' | sed 's/+//' | sed 's/°C//'"
+      expected: "60"
+
+  - id: AC-HARDWARE-002
+    title: "Check fan speed"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Hardware"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "sensors | grep 'fan' | awk '{print $2}'"
+      expected: "1000"
+
+  - id: AC-HARDWARE-003
+    title: "Check RAID status"
+    frameworks:
+      CIS: "1.1.3"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Hardware"
+    severity: "high"
+    check:
+      type: "command"
+      command: "cat /proc/mdstat | grep -q 'active raid' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-HARDWARE-004
+    title: "Check disk SMART status"
+    frameworks:
+      CIS: "1.1.4"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Hardware"
+    severity: "high"
+    check:
+      type: "command"
+      command: "smartctl -H /dev/sda | grep -q 'PASSED' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-NETWORK-006
+    title: "Check network interface status"
+    frameworks:
+      CIS: "3.1.1"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ip link show | grep -q 'state UP' && echo 'up'"
+      expected: "up"
+
+  - id: AC-NETWORK-007
+    title: "Check network throughput"
+    frameworks:
+      CIS: "3.1.2"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "low"
+    check:
+      type: "command"
+      command: "ping -c 4 -s 1472 -M do google.com | tail -n 1 | awk '{print $4}'"
+      expected: "50"
+
+  - id: AC-NETWORK-008
+    title: "Check DNS resolution time"
+    frameworks:
+      CIS: "3.1.3"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "low"
+    check:
+      type: "command"
+      command: "dig google.com | grep 'Query time' | awk '{print $4}'"
+      expected: "50"
+
+  - id: AC-NETWORK-009
+    title: "Check network packet loss"
+    frameworks:
+      CIS: "3.1.4"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ping -c 10 google.com | grep -oP '\\d+(?=% packet loss)'"
+      expected: "0"
+
+  - id: AC-NETWORK-010
+    title: "Check SSL certificates expiry"
+    frameworks:
+      CIS: "1.2.1"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "openssl x509 -checkend 86400 -noout -in /etc/ssl/certs/ssl-cert-snakeoil.pem"
+      expected: "Certificate will expire"
+
+  - id: AC-SSH-010
+    title: "Ensure SSH Ciphers are strong"
+    frameworks:
+      CIS: "5.2.14"
+      ISO27001: "A.9.4.2"
+      NIST: "SC-13"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr"
+
+  - id: AC-SSH-011
+    title: "Ensure SSH MACs are strong"
+    frameworks:
+      CIS: "5.2.15"
+      ISO27001: "A.9.4.2"
+      NIST: "SC-13"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com"
+
+  - id: AC-SSH-012
+    title: "Ensure SSH KexAlgorithms are strong"
+    frameworks:
+      CIS: "5.2.16"
+      ISO27001: "A.9.4.2"
+      NIST: "SC-13"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group14-sha256"
+
+  - id: AC-SSH-013
+    title: "Ensure SSH AllowUsers is configured"
+    frameworks:
+      CIS: "5.2.17"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "AllowUsers"
+
+  - id: AC-SSH-014
+    title: "Ensure SSH DenyUsers is configured"
+    frameworks:
+      CIS: "5.2.18"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "DenyUsers"
+
+  - id: AC-SSH-015
+    title: "Ensure SSH PermitEmptyPasswords is disabled"
+    frameworks:
+      CIS: "5.2.19"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "PermitEmptyPasswords no"
+
+  - id: AC-SSH-016
+    title: "Ensure SSH PermitUserEnvironment is disabled"
+    frameworks:
+      CIS: "5.2.20"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "PermitUserEnvironment no"
+
+  - id: AC-SSH-017
+    title: "Ensure SSH UsePAM is enabled"
+    frameworks:
+      CIS: "5.2.21"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "UsePAM yes"
+
+  - id: AC-AUDIT-008
+    title: "Ensure auditd is configured for monitoring file accesses"
+    frameworks:
+      CIS: "4.1.8"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /etc/ssh/sshd_config -p wa -k sshd"
+
+  - id: AC-AUDIT-009
+    title: "Ensure auditd is configured for monitoring sudoers"
+    frameworks:
+      CIS: "4.1.9"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /etc/sudoers.d/ -p wa -k sudoers"
+
+  - id: AC-AUDIT-010
+    title: "Ensure auditd is configured for monitoring user activities"
+    frameworks:
+      CIS: "4.1.10"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /var/log/wtmp -p wa -k session"
+
+  - id: AC-AUDIT-011
+    title: "Ensure auditd is configured for monitoring processes"
+    frameworks:
+      CIS: "4.1.11"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-a always,exit -F arch=b64 -S execve -k processes"
+
+  - id: AC-AUDIT-012
+    title: "Ensure auditd is configured for monitoring user authentication"
+    frameworks:
+      CIS: "4.1.12"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/audit/rules.d/audit.rules"
+      expected: "-w /var/log/faillog -p wa -k auth"
+
+  - id: AC-PAM-004
+    title: "Check pam_unix.so settings"
+    frameworks:
+      CIS: "5.3.4"
+      ISO27001: "A.9.4.3"
+      NIST: "IA-5"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-password"
+      expected: "pam_unix.so sha512 shadow"
+
+  - id: AC-PAM-005
+    title: "Check pam_faillock.so configuration"
+    frameworks:
+      CIS: "5.3.5"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-7"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-auth"
+      expected: "pam_faillock.so preauth"
+
+  - id: AC-PAM-006
+    title: "Check pam_deny.so configuration"
+    frameworks:
+      CIS: "5.3.6"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-7"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-auth"
+      expected: "pam_deny.so"
+
+  - id: AC-PAM-007
+    title: "Check pam_limits.so configuration"
+    frameworks:
+      CIS: "5.3.7"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-session"
+      expected: "pam_limits.so"
+
+  - id: AC-PAM-008
+    title: "Check pam_time.so configuration"
+    frameworks:
+      CIS: "5.3.8"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-2"
+    category: "Authentication"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/pam.d/common-session"
+      expected: "pam_time.so"
+
+  - id: AC-KERNEL-012
+    title: "Check kernel version is updated"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Kernel"
+    severity: "high"
+    check:
+      type: "command"
+      command: "uname -r | grep -q '^5.' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-KERNEL-013
+    title: "Check kernel panic timeout"
+    frameworks:
+      CIS: "1.5.5"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Kernel"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "kernel.panic = 10"
+
+  - id: AC-KERNEL-014
+    title: "Check kernel core dump pattern"
+    frameworks:
+      CIS: "1.5.6"
+      ISO27001: "A.12.6.1"
+      NIST: "AC-6"
+    category: "Kernel"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "kernel.core_pattern = |/bin/false"
+
+  - id: AC-KERNEL-015
+    title: "Check kernel NMI watchdog"
+    frameworks:
+      CIS: "1.5.7"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Kernel"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "kernel.nmi_watchdog = 0"
+
+  - id: AC-KERNEL-016
+    title: "Check kernel soft lockup"
+    frameworks:
+      CIS: "1.5.8"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Kernel"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "kernel.softlockup_panic = 1"
+
+  - id: AC-NETWORK-011
+    title: "Check IPv6 is disabled if not needed"
+    frameworks:
+      CIS: "3.1.3"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv6.conf.all.disable_ipv6 = 1"
+
+  - id: AC-NETWORK-012
+    title: "Check TCP timestamps are disabled"
+    frameworks:
+      CIS: "3.3.6"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_timestamps = 0"
+
+  - id: AC-NETWORK-013
+    title: "Check TCP SYN retries"
+    frameworks:
+      CIS: "3.3.7"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_syn_retries = 2"
+
+  - id: AC-NETWORK-014
+    title: "Check TCP FIN timeout"
+    frameworks:
+      CIS: "3.3.8"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_fin_timeout = 30"
+
+  - id: AC-NETWORK-015
+    title: "Check TCP keepalive time"
+    frameworks:
+      CIS: "3.3.9"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_keepalive_time = 300"
+
+  - id: AC-NETWORK-016
+    title: "Check TCP keepalive probes"
+    frameworks:
+      CIS: "3.3.10"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_keepalive_probes = 3"
+
+  - id: AC-NETWORK-017
+    title: "Check TCP keepalive interval"
+    frameworks:
+      CIS: "3.3.11"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_keepalive_intvl = 60"
+
+  - id: AC-NETWORK-018
+    title: "Check TCP retries2"
+    frameworks:
+      CIS: "3.3.12"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.tcp_retries2 = 5"
+
+  - id: AC-NETWORK-019
+    title: "Check IP forwarding for IPv4"
+    frameworks:
+      CIS: "3.3.13"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-4"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/sysctl.conf"
+      expected: "net.ipv4.ip_forward = 0"
+
+  - id: AC-SYSTEMD-001
+    title: "Check systemd journal persistence"
+    frameworks:
+      CIS: "1.4.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/systemd/journald.conf"
+      expected: "Storage=persistent"
+
+  - id: AC-SYSTEMD-002
+    title: "Check systemd journal compression"
+    frameworks:
+      CIS: "1.4.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/systemd/journald.conf"
+      expected: "Compress=yes"
+
+  - id: AC-SYSTEMD-003
+    title: "Check systemd journal forward to syslog"
+    frameworks:
+      CIS: "1.4.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/systemd/journald.conf"
+      expected: "ForwardToSyslog=yes"
+
+  - id: AC-SYSTEMD-004
+    title: "Check systemd journal max size"
+    frameworks:
+      CIS: "1.4.4"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/systemd/journald.conf"
+      expected: "SystemMaxUse=1G"
+
+  - id: AC-SYSTEMD-005
+    title: "Check systemd service timeout"
+    frameworks:
+      CIS: "1.4.5"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "System"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/systemd/system.conf"
+      expected: "DefaultTimeoutStopSec=10s"
+
+  - id: AC-CRYPTO-001
+    title: "Check OpenSSL version is updated"
+    frameworks:
+      CIS: "1.2.1"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "openssl version | grep -q '1.1.1' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-CRYPTO-002
+    title: "Check crypto policies are strong"
+    frameworks:
+      CIS: "1.2.2"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/crypto-policies/config"
+      expected: "DEFAULT"
+
+  - id: AC-CRYPTO-003
+    title: "Check certificates are not expired"
+    frameworks:
+      CIS: "1.2.3"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "for cert in /etc/ssl/certs/*.pem; do openssl x509 -checkend 0 -noout -in $cert 2>/dev/null && echo 'valid' || echo 'expired'; done | grep -q 'expired' && echo 'expired' || echo 'all valid'"
+      expected: "all valid"
+
+  - id: AC-DNS-001
+    title: "Check DNS over TLS configuration"
+    frameworks:
+      CIS: "3.1.1"
+      ISO27001: "A.13.2.1"
+      NIST: "SC-8"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/systemd/resolved.conf"
+      expected: "DNSOverTLS=yes"
+
+  - id: AC-DNS-002
+    title: "Check DNSSEC configuration"
+    frameworks:
+      CIS: "3.1.2"
+      ISO27001: "A.13.2.1"
+      NIST: "SC-8"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/systemd/resolved.conf"
+      expected: "DNSSEC=yes"
+
+  - id: AC-DNS-003
+    title: "Check DNS cache"
+    frameworks:
+      CIS: "3.1.3"
+      ISO27001: "A.13.2.1"
+      NIST: "SC-8"
+    category: "Network"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/nsswitch.conf"
+      expected: "hosts: files dns myhostname"
+
+  - id: AC-FIREWALL-006
+    title: "Check iptables firewall rules"
+    frameworks:
+      CIS: "9.2.1"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "iptables -L | grep -q 'Chain INPUT (policy DROP)' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-FIREWALL-007
+    title: "Check nftables firewall rules"
+    frameworks:
+      CIS: "9.3.1"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "command"
+      command: "nft list ruleset | grep -q 'counter accept' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-FIREWALL-008
+    title: "Check firewall rate limiting"
+    frameworks:
+      CIS: "9.1.4"
+      ISO27001: "A.13.1.1"
+      NIST: "AC-7"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ufw status | grep -q 'limit 30/min' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-FILEPERM-014
+    title: "Check /etc/sudoers permissions"
+    frameworks:
+      CIS: "6.1.10"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "permission"
+      file: "/etc/sudoers"
+      expected: "440"
+
+  - id: AC-FILEPERM-015
+    title: "Check /etc/sudoers.d permissions"
+    frameworks:
+      CIS: "6.1.11"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "high"
+    check:
+      type: "permission"
+      file: "/etc/sudoers.d"
+      expected: "750"
+
+  - id: AC-FILEPERM-016
+    title: "Check /var/log permissions"
+    frameworks:
+      CIS: "6.1.12"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "medium"
+    check:
+      type: "permission"
+      file: "/var/log"
+      expected: "755"
+
+  - id: AC-FILEPERM-017
+    title: "Check /var/log/secure permissions"
+    frameworks:
+      CIS: "6.1.13"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "medium"
+    check:
+      type: "permission"
+      file: "/var/log/secure"
+      expected: "640"
+
+  - id: AC-FILEPERM-018
+    title: "Check /var/log/auth.log permissions"
+    frameworks:
+      CIS: "6.1.14"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "File Integrity"
+    severity: "medium"
+    check:
+      type: "permission"
+      file: "/var/log/auth.log"
+      expected: "640"
+
+  - id: AC-APT-001
+    title: "Check APT source list security"
+    frameworks:
+      CIS: "1.2.3"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/apt/sources.list"
+      expected: "deb https://"
+
+  - id: AC-APT-002
+    title: "Check APT authentication"
+    frameworks:
+      CIS: "1.2.4"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/apt/apt.conf.d/20auto-upgrades"
+      expected: "APT::Periodic::Update-Package-Lists"
+
+  - id: AC-APT-003
+    title: "Check APT clean interval"
+    frameworks:
+      CIS: "1.2.5"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "low"
+    check:
+      type: "file_contains"
+      file: "/etc/apt/apt.conf.d/20auto-upgrades"
+      expected: "APT::Periodic::CleanInterval"
+
+  - id: AC-USER-006
+    title: "Check user shell is valid"
+    frameworks:
+      CIS: "6.2.7"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "awk -F: '($7 != \"/bin/bash\" && $7 != \"/bin/zsh\" && $7 != \"/bin/sh\" && $7 != \"/usr/bin/bash\") {print $1}' /etc/passwd | wc -l"
+      expected: "0"
+
+  - id: AC-USER-007
+    title: "Check user home directory permissions"
+    frameworks:
+      CIS: "6.2.8"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "ls -la /home/ | grep -v '^d' | wc -l"
+      expected: "0"
+
+  - id: AC-USER-008
+    title: "Check .netrc file exists"
+    frameworks:
+      CIS: "6.2.9"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "find /home -name .netrc 2>/dev/null | wc -l"
+      expected: "0"
+
+  - id: AC-USER-009
+    title: "Check .rhosts file exists"
+    frameworks:
+      CIS: "6.2.10"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "find /home -name .rhosts 2>/dev/null | wc -l"
+      expected: "0"
+
+  - id: AC-USER-010
+    title: "Check SSH authorized keys permissions"
+    frameworks:
+      CIS: "6.2.11"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "find /home -name authorized_keys -exec ls -la {} \\; | grep -v '^-rw-------' | wc -l"
+      expected: "0"
+
+  - id: AC-CONTAINER-001
+    title: "Check container runtime security"
+    frameworks:
+      CIS: "2.1.17"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "docker info | grep -q 'Security Options: apparmor' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-CONTAINER-002
+    title: "Check container images are updated"
+    frameworks:
+      CIS: "2.1.18"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "docker images | grep -v 'TAG' | awk '{print $2}' | grep -v latest | wc -l"
+      expected: "0"
+
+  - id: AC-CONTAINER-003
+    title: "Check container network security"
+    frameworks:
+      CIS: "2.1.19"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "docker network ls | grep -q bridge && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-CONTAINER-004
+    title: "Check container resource limits"
+    frameworks:
+      CIS: "2.1.20"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Containers"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "docker ps --format '{{.Image}}' | xargs -I {} docker inspect {} | grep -q '\"Memory\"' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-KUBERNETES-001
+    title: "Check Kubernetes API server security"
+    frameworks:
+      CIS: "2.2.1"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "kubectl version --short | grep -q 'Server Version' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-KUBERNETES-002
+    title: "Check Kubernetes RBAC configuration"
+    frameworks:
+      CIS: "2.2.2"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-2"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "kubectl get clusterrolebinding -o json | grep -q 'cluster-admin' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-KUBERNETES-003
+    title: "Check Kubernetes pod security policies"
+    frameworks:
+      CIS: "2.2.3"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "kubectl get psp -o json | grep -q 'privileged: false' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-KUBERNETES-004
+    title: "Check Kubernetes secrets encryption"
+    frameworks:
+      CIS: "2.2.4"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Containers"
+    severity: "high"
+    check:
+      type: "command"
+      command: "kubectl get secret -n kube-system -o json | grep -q 'encryption-provider-config' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-STORAGE-001
+    title: "Check LVM configuration"
+    frameworks:
+      CIS: "1.1.9"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Storage"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "lvdisplay | grep -q 'LV Status' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-STORAGE-002
+    title: "Check filesystem journaling"
+    frameworks:
+      CIS: "1.1.10"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Storage"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "mount | grep -q 'ext4' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-STORAGE-003
+    title: "Check disk encryption"
+    frameworks:
+      CIS: "1.1.11"
+      ISO27001: "A.10.8.1"
+      NIST: "SC-13"
+    category: "Storage"
+    severity: "high"
+    check:
+      type: "command"
+      command: "lsblk | grep -q 'crypt' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-NTP-002
+    title: "Check NTP pool configuration"
+    frameworks:
+      CIS: "2.2.2"
+      ISO27001: "A.12.4.4"
+      NIST: "AU-8"
+    category: "System Time"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/ntp.conf"
+      expected: "pool 0.pool.ntp.org"
+
+  - id: AC-NTP-003
+    title: "Check timezone is correct"
+    frameworks:
+      CIS: "2.2.3"
+      ISO27001: "A.12.4.4"
+      NIST: "AU-8"
+    category: "System Time"
+    severity: "low"
+    check:
+      type: "command"
+      command: "timedatectl | grep 'Time zone' | awk '{print $3}'"
+      expected: "UTC"
+
+  - id: AC-AD-001
+    title: "Check Active Directory integration"
+    frameworks:
+      CIS: "5.1.6"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "realm list | grep -q 'domain-name' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-AD-002
+    title: "Check AD certificate authentication"
+    frameworks:
+      CIS: "5.1.7"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "command"
+      command: "certutil -T -d /etc/sssd/sssd.conf | grep -q 'cert' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-LDAP-001
+    title: "Check LDAP security settings"
+    frameworks:
+      CIS: "5.1.8"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ldap/ldap.conf"
+      expected: "TLS_CACERT"
+
+  - id: AC-LDAP-002
+    title: "Check LDAP TLS is enabled"
+    frameworks:
+      CIS: "5.1.9"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ldap/ldap.conf"
+      expected: "TLS_REQCERT"
+
+  - id: AC-CLAMAV-001
+    title: "Check ClamAV virus definitions"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "freshclam --version | grep -q 'Database' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-CLAMAV-002
+    title: "Check ClamAV scan schedule"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Security"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'clamscan' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-AIDE-001
+    title: "Check AIDE is installed"
+    frameworks:
+      CIS: "4.2.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "high"
+    check:
+      type: "command"
+      command: "which aide && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-AIDE-002
+    title: "Check AIDE database exists"
+    frameworks:
+      CIS: "4.2.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /var/lib/aide/aide.db.gz && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-AIDE-003
+    title: "Check AIDE scan schedule"
+    frameworks:
+      CIS: "4.2.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Auditing"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'aide' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-MONITORING-003
+    title: "Check monitoring alerting configuration"
+    frameworks:
+      CIS: "1.3.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Monitoring"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/monitoring/alert.conf"
+      expected: "alert_enabled = true"
+
+  - id: AC-MONITORING-004
+    title: "Check monitoring retention period"
+    frameworks:
+      CIS: "1.3.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Monitoring"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/monitoring/retention.conf"
+      expected: "retention_days = 30"
+
+  - id: AC-SYSLOG-001
+    title: "Check syslog remote logging"
+    frameworks:
+      CIS: "1.3.6"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "@@remote-syslog"
+
+  - id: AC-SYSLOG-002
+    title: "Check syslog TLS configuration"
+    frameworks:
+      CIS: "1.3.7"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "$DefaultNetstreamDriverCAFile"
+
+  - id: AC-SYSLOG-003
+    title: "Check syslog rate limiting"
+    frameworks:
+      CIS: "1.3.8"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Logging"
+    severity: "medium"
+    check:
+      type: "file_contains"
+      file: "/etc/rsyslog.conf"
+      expected: "$SystemLogRateLimitBurst"
+
+  - id: AC-BACKUP-003
+    title: "Check backup encryption"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.10.8.1"
+      NIST: "CP-9"
+    category: "Backup"
+    severity: "high"
+    check:
+      type: "command"
+      command: "gpg --list-keys | grep -q 'backup' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-BACKUP-004
+    title: "Check backup restoration test"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-9"
+    category: "Backup"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /var/log/backup_test.log && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-BACKUP-005
+    title: "Check backup offsite storage"
+    frameworks:
+      CIS: "1.1.3"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-9"
+    category: "Backup"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /mnt/backup/backup.tar.gz && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-DR-001
+    title: "Check disaster recovery plan"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-2"
+    category: "Recovery"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /etc/dr_plan.conf && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-DR-002
+    title: "Check DR test schedule"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-4"
+    category: "Recovery"
+    severity: "high"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'dr_test' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-BP-001
+    title: "Check business continuity plan"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-2"
+    category: "Recovery"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /etc/bcp_plan.conf && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-BP-002
+    title: "Check BCP test schedule"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.3.1"
+      NIST: "CP-4"
+    category: "Recovery"
+    severity: "high"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'bcp_test' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-CMDB-001
+    title: "Check CMDB integration"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-2"
+    category: "Management"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "test -f /etc/cmdb.conf && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-CMDB-002
+    title: "Check asset inventory"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-2"
+    category: "Management"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ls -la /etc/asset_inventory/ | wc -l"
+      expected: "10"
+
+  - id: AC-COMPLIANCE-001
+    title: "Check compliance reporting"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Compliance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "test -f /var/log/compliance_report.log && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-COMPLIANCE-002
+    title: "Check compliance scan schedule"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Compliance"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'compliance_scan' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-REMEDIATION-001
+    title: "Check automated remediation"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /usr/local/bin/remediation_script.sh && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-REMEDIATION-002
+    title: "Check remediation schedule"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'remediation' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-VULNERABILITY-001
+    title: "Check vulnerability scanner"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.6.1"
+      NIST: "RA-5"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "which lynis && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-VULNERABILITY-002
+    title: "Check vulnerability scan schedule"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.6.1"
+      NIST: "RA-5"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'lynis' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-VULNERABILITY-003
+    title: "Check vulnerability database"
+    frameworks:
+      CIS: "1.1.3"
+      ISO27001: "A.12.6.1"
+      NIST: "RA-5"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /var/lib/lynis/lynis.db && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-VULNERABILITY-004
+    title: "Check vulnerability reports"
+    frameworks:
+      CIS: "1.1.4"
+      ISO27001: "A.12.6.1"
+      NIST: "RA-5"
+    category: "Security"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "test -f /var/log/vulnerability_report.log && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-PATCH-001
+    title: "Check patch management policy"
+    frameworks:
+      CIS: "1.2.6"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /etc/patch_policy.conf && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-PATCH-002
+    title: "Check patch schedule"
+    frameworks:
+      CIS: "1.2.7"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "high"
+    check:
+      type: "command"
+      command: "crontab -l | grep -q 'patch' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-PATCH-003
+    title: "Check patch log"
+    frameworks:
+      CIS: "1.2.8"
+      ISO27001: "A.12.5.1"
+      NIST: "CM-7"
+    category: "Packaging"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "test -f /var/log/patch.log && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-ENV-003
+    title: "Check environment variables security"
+    frameworks:
+      CIS: "6.1.3"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Environment"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "env | grep -v '^_' | wc -l"
+      expected: "20"
+
+  - id: AC-ENV-004
+    title: "Check sensitive variables in env"
+    frameworks:
+      CIS: "6.1.4"
+      ISO27001: "A.9.4.2"
+      NIST: "AC-6"
+    category: "Environment"
+    severity: "high"
+    check:
+      type: "command"
+      command: "env | grep -E '(PASSWORD|SECRET|KEY)' | wc -l"
+      expected: "0"
+
+  - id: AC-PROCESS-003
+    title: "Check zombie processes"
+    frameworks:
+      CIS: "1.3.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Processes"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ps aux | awk '{print $8}' | grep Z | wc -l"
+      expected: "0"
+
+  - id: AC-PROCESS-004
+    title: "Check CPU utilization per process"
+    frameworks:
+      CIS: "1.3.4"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Processes"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ps aux --sort=-%cpu | awk '{print $3}' | head -n 5 | tail -n 1"
+      expected: "50"
+
+  - id: AC-PROCESS-005
+    title: "Check memory utilization per process"
+    frameworks:
+      CIS: "1.3.5"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Processes"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ps aux --sort=-%mem | awk '{print $4}' | head -n 5 | tail -n 1"
+      expected: "10"
+
+  - id: AC-NETWORK-020
+    title: "Check network connections count"
+    frameworks:
+      CIS: "3.1.5"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "netstat -an | wc -l"
+      expected: "100"
+
+  - id: AC-NETWORK-021
+    title: "Check established connections"
+    frameworks:
+      CIS: "3.1.6"
+      ISO27001: "A.13.1.1"
+      NIST: "SC-5"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "netstat -an | grep ESTABLISHED | wc -l"
+      expected: "20"
+
+  - id: AC-NETWORK-022
+    title: "Check listening services"
+    frameworks:
+      CIS: "3.1.7"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "netstat -lntp | wc -l"
+      expected: "10"
+
+  - id: AC-NETWORK-023
+    title: "Check firewall logging"
+    frameworks:
+      CIS: "9.1.5"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Network"
+    severity: "medium"
+    check:
+      type: "command"
+      command: "ufw status | grep -q 'logging' && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-IDS-001
+    title: "Check IDS/IPS installed"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "which snort || which suricata || which fail2ban"
+      expected: "/usr/bin/snort"
+
+  - id: AC-IDS-002
+    title: "Check IDS rules are updated"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.12.6.1"
+      NIST: "SC-5"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "command"
+      command: "test -f /var/lib/snort/rules/community-rules.tar.gz && echo 'ok'"
+      expected: "ok"
+
+  - id: AC-IDS-003
+    title: "Check IDS alerting"
+    frameworks:
+      CIS: "1.1.3"
+      ISO27001: "A.12.4.1"
+      NIST: "AU-2"
+    category: "Security"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/snort/snort.conf"
+      expected: "alert"
+
+  - id: AC-WAF-001
+    title: "Check WAF is configured"
+    frameworks:
+      CIS: "1.1.1"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/nginx/nginx.conf"
+      expected: "modsecurity"
+
+  - id: AC-WAF-002
+    title: "Check WAF rules are enabled"
+    frameworks:
+      CIS: "1.1.2"
+      ISO27001: "A.13.1.1"
+      NIST: "CM-7"
+    category: "Network"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/nginx/modsecurity.conf"
+      expected: "SecRuleEngine On"
+
+  - id: AC-BASTION-001
+    title: "Check bastion host configuration"
+    frameworks:
+      CIS: "5.1.10"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "Match Address"
+
+  - id: AC-BASTION-002
+    title: "Check bastion host restrictions"
+    frameworks:
+      CIS: "5.1.11"
+      ISO27001: "A.9.4.2"
+      NIST: "IA-2"
+    category: "Authentication"
+    severity: "high"
+    check:
+      type: "file_contains"
+      file: "/etc/ssh/sshd_config"
+      expected: "AllowTcpForwarding no"
