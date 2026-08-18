@@ -54,15 +54,9 @@ Clone the repository:
 ```bash
 git clone https://github.com/J3ngibre/WomComp.git
 cd WomComp
+chmod +x Install.sh
+./Install.sh
 ```
-
-Install dependencies:
-
-
-```bash
-python3 -m pip install pyyaml
-```
-
 ---
 
 # Usage
